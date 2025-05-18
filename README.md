@@ -278,9 +278,9 @@ Our evaluation pipeline iterates over the dataset, performing the following step
 ---
 
 ## Contributors
-- **Bhanuja Bhatt**
-- **Subha Chakraborty**
-- **Meenal Jain**
+- **Bhanuja Bhatt**(MT2024030)
+- **Subha Chakraborty**(MT2024156)
+- **Meenal Jain**(MT2024088)
 
 
 
