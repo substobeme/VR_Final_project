@@ -38,9 +38,8 @@ The **Amazon Berkeley Objects (ABO) Dataset** includes:
 
 - **147,702** product listings with multilingual metadata  
 - **398,212** unique catalog images  
-- Used the small variant (**3GB**) with:
-  - Metadata in CSV format  
-  - Images resized to 256×256 resolution  
+- We used the small variant (**3GB**) of the dataset because it was computationally feasible and sufficient for training and evaluation.  
+- Images were in **256×256 resolution**, which is suitable for most CNN-based vision models.
 
 ---
 
@@ -48,20 +47,28 @@ The **Amazon Berkeley Objects (ABO) Dataset** includes:
 
 #### Language Filtering:
 
-- Filtered entries based on `'language_tag'` starting with `'en'`
-- Found multiple English variants: `en_US`, `en_GB`, `en_CA`, `en_AU`, `en_IN`, `en_SG`, `en_AE`
-- Result: **118,588** English-language entries retained
+- **What we did**: Filtered entries based on `'language_tag'` starting with `'en'`
+- **Why**: 
+  - To ensure consistency in training text-based metadata fields.
+  - Non-English entries could introduce linguistic variability and noise.
+  - Focused on English variants: `en_US`, `en_GB`, `en_CA`, `en_AU`, `en_IN`, `en_SG`, `en_AE`
+- **Outcome**: **118,588** English-language entries retained
 
 #### Metadata Structure Analysis:
 
-- Inspected structure of JSON metadata files  
-- Focused on key fields and `'node'` fields (hierarchical categories)
+- **What we did**: Analyzed the metadata JSON files to understand the structure and relevance of different fields.
+- **Why**: 
+  - To identify fields most relevant to product classification (e.g., `node_name`, `product_type`, etc.)
+  - To ensure the data schema was well understood for preprocessing and model input formatting.
+- **Focus**: `'node'` fields were particularly important as they contained hierarchical category information crucial for classification.
 
 #### Node-Based Filtering:
 
-- Further filtered for entries containing valid `node` information  
-- Resulted in **112,600** entries  
-- Ensured proper categorization for all retained products
+- **What we did**: Retained only those entries that contained valid `'node'` information.
+- **Why**:
+  - Entries without node data lacked proper categorization.
+  - For a classification task, having a reliable label or hierarchy is essential.
+- **Outcome**: Reduced dataset to **112,600** well-categorized entries
 
 ---
 
@@ -69,22 +76,31 @@ The **Amazon Berkeley Objects (ABO) Dataset** includes:
 
 #### Language Standardization:
 
-- Removed all non-English content  
-- Stripped language tags after filtering  
+- **What we did**: Removed non-English content and stripped language tags.
+- **Why**: 
+  - Simplified the dataset structure for modeling.
+  - Prevented language-specific preprocessing complications.
+  - Allowed us to treat text data uniformly.
 
 #### Field Reduction:
 
-- Removed unnecessary fields including:
+- **What we did**: Removed irrelevant fields such as:
   - Other image IDs, item IDs, model numbers, marketplace identifiers  
   - Domain names, 3D model IDs, spin IDs, node IDs  
-- Resulted in a simplified, reduced-size dataset
+- **Why**:
+  - Reduced memory and computational load.
+  - These fields were not useful for visual recognition or classification.
+  - Helped in focusing on essential information for training and inference.
 
 #### Record Validation:
 
-- Ensured:
-  - All records have valid `node_name`  
-  - Non-null `main_image_id`  
-- Final curated dataset: **112,119** complete records  
+- **What we did**: Dropped records with:
+  - Missing or null `main_image_id`
+  - Missing `node_name`
+- **Why**:
+  - These fields are critical: an image is necessary for visual recognition, and `node_name` provides the label.
+  - Keeping only complete and valid records ensures training integrity.
+- **Final Outcome**: **112,119** complete and usable records
 
 ---
 
@@ -92,14 +108,18 @@ The **Amazon Berkeley Objects (ABO) Dataset** includes:
 
 ### Hierarchical Category Extraction:
 
-- Split `node_name` into **category levels 1 to 6**  
-- Created a tree-based product hierarchy  
+- **What we did**: Parsed `node_name` into multiple levels (category level 1 to 6)
+- **Why**:
+  - Enabled fine-grained analysis of category depth and structure.
+  - Useful for experimenting with different classification granularity (e.g., coarse vs. fine labels).
 
 ### Category Distribution:
 
-- Frequency analysis of top-level categories  
-- Kept only those with more than **100 entries**  
-- Top categories:
+- **What we did**: Analyzed distribution of top-level categories and filtered low-representation ones.
+- **Why**:
+  - Some categories were underrepresented and could introduce class imbalance.
+  - Focused training on categories with sufficient data improves model generalization.
+- **Kept categories**:
   - Categories  
   - Homeware & Furniture  
   - Home & Garden  
@@ -112,9 +132,12 @@ The **Amazon Berkeley Objects (ABO) Dataset** includes:
 
 ### Product Type Distribution:
 
-- Extracted primary product types  
-- Found **496 unique product types**  
-- Top product types:
+- **What we did**: Identified primary product type for each record.
+- **Why**:
+  - Provided an additional layer of labeling for potential multi-label or fine-grained classification tasks.
+  - Helped understand diversity and richness of the dataset.
+
+- **Top product types**:
   - `CELLULAR_PHONE_CASE` – 64,705 entries  
   - `SHOES` – 9,070 entries  
   - `GROCERY` – 4,814 entries  
@@ -123,14 +146,12 @@ The **Amazon Berkeley Objects (ABO) Dataset** includes:
 
 ### Data Balance Analysis:
 
-- Found **CELLULAR_PHONE_CASE** heavily overrepresented  
-- Filtered to keep only types with more than **100 entries**  
-- Resulted in **68 product categories**
+- **What we did**: Retained only product types with more than **100 entries**.
+- **Why**:
+  - Extremely imbalanced data (e.g., phone cases dominating) can bias the model.
+  - Removing underrepresented types ensured more uniform learning and reduced overfitting to dominant classes.
+- **Outcome**: Reduced to **68 product categories** with adequate representation
+
+  The curation process transformed noisy, multilingual, and partially incomplete data into a **clean, English-only dataset** with a **consistent structure**, **valid images**, and **balanced category representation**. This curated dataset provides a strong foundation for training high-quality visual recognition models.
 
 ---
-
-
-
-
-
-
