@@ -11,7 +11,10 @@
   - [Category Analysis](#category-analysis)  
   - [Product Type Analysis](#product-type-analysis)
   - [VQA-Dataset-Creation-Process](#VQA-Dataset-Creation-Process)  
-- [Baseline Evaluation](#VQA-Dataset-Creation-Process)  
+- [Evaluation and Model Performance](#Evaluation-and-Model-Performance)
+  - [Baseline Prediction and Model Choice](#Baseline-Prediction-and-Model-Choice)
+  - [Evaluation Metrics](#Evaluation-Metrics)
+  - [Process and Implementation](#Process-and-Implementation)
  
 
 ---
@@ -105,16 +108,16 @@ The **Amazon Berkeley Objects (ABO) Dataset** includes:
 
 ---
 
-## Category Analysis
+### Category Analysis
 
-### Hierarchical Category Extraction:
+#### Hierarchical Category Extraction:
 
 - **What we did**: Parsed `node_name` into multiple levels (category level 1 to 6)
 - **Why**:
   - Enabled fine-grained analysis of category depth and structure.
   - Useful for experimenting with different classification granularity (e.g., coarse vs. fine labels).
 
-### Category Distribution:
+#### Category Distribution:
 
 - **What we did**: Analyzed distribution of top-level categories and filtered low-representation ones.
 - **Why**:
@@ -129,9 +132,9 @@ The **Amazon Berkeley Objects (ABO) Dataset** includes:
 
 ---
 
-## Product Type Analysis
+### Product Type Analysis
 
-### Product Type Distribution:
+#### Product Type Distribution:
 
 - **What we did**: Identified primary product type for each record.
 - **Why**:
@@ -222,3 +225,57 @@ Upon receiving the API responses, we carefully parsed the JSON-formatted questio
 #### Dataset Construction
 
 Finally, we constructed the dataset by linking each image path to its corresponding set of question-answer pairs. To safeguard against data loss and facilitate incremental work, we saved the generated data progressively into a CSV file. This structured dataset is now well-suited for training, fine-tuning, and evaluating models on Visual Question Answering tasks. v140.csv in our repo is the final curated datset.
+
+---
+
+## Evaluation and Model Performance
+
+---
+
+### Baseline Prediction and Model Choice
+
+For the baseline evaluation, we utilized the BLIP-2 (Bootstrapped Language-Image Pretraining) model, specifically the `Salesforce/blip2-opt-2.7b` variant. This model was chosen for its state-of-the-art performance in vision-language tasks, combining powerful image understanding with natural language generation capabilities. Its architecture is well-suited for Visual Question Answering (VQA), making it an excellent candidate for establishing a reliable baseline.
+
+We set up the model and processor to run on a GPU if available, otherwise defaulting to CPU, ensuring optimized performance across different hardware environments.
+
+Our prediction pipeline processes the curated dataset in batches, feeding each image-question pair into the model to generate an answer. This approach enabled efficient inference while maintaining consistent evaluation across the dataset.
+
+---
+
+### Evaluation Metrics
+
+To quantitatively assess the model’s performance, we implemented several standard metrics:
+
+- **Exact Match (EM):** This metric measures the percentage of predictions that exactly match the ground truth answers. It reflects the model’s precision in producing perfectly correct answers.
+
+- **F1 Score:** This metric evaluates the harmonic mean of precision and recall on a token level, allowing partial credit for answers that overlap with the ground truth but are not exact matches. The F1 score is particularly useful for handling variations in phrasing and minor discrepancies.
+
+Additionally, we applied text normalization techniques before comparison, including:
+
+- Lowercasing all text
+- Removing punctuation and special characters
+- Converting number words (e.g., "three") to digits ("3")
+
+This normalization helped reduce mismatches due to superficial differences, providing a fairer evaluation of the model’s understanding.
+
+---
+
+### Process and Implementation
+
+Our evaluation pipeline iterates over the dataset, performing the following steps for each entry:
+
+1. **Image Loading:** The corresponding image is loaded and preprocessed.
+
+2. **Answer Generation:** The model receives the image and question prompt, generating a predicted answer with beam search for improved quality.
+
+3. **Answer Extraction:** We parse the model output to isolate the answer portion, further refining it to a concise response suitable for comparison.
+
+4. **Scoring:** The predicted answer is normalized and compared against the ground truth using Exact Match and F1 metrics.
+
+5. **Result Logging:** Predictions and scores are saved incrementally to CSV files to safeguard against data loss and facilitate further analysis.
+
+---
+
+
+
+
