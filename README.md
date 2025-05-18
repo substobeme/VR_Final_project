@@ -9,7 +9,8 @@
   - [Data Filtering Process](#data-filtering-process)  
   - [Data Cleaning and Standardization](#data-cleaning-and-standardization)  
   - [Category Analysis](#category-analysis)  
-  - [Product Type Analysis](#product-type-analysis)  
+  - [Product Type Analysis](#product-type-analysis)
+  - [VQA-Dataset-Creation-Process](#VQA-Dataset-Creation-Process)  
 - [Baseline Evaluation](#VQA-Dataset-Creation-Process)  
  
 
@@ -156,29 +157,29 @@ The **Amazon Berkeley Objects (ABO) Dataset** includes:
 
 ---
 
-## VQA Dataset Creation Process
+### VQA Dataset Creation Process
 Our team developed a robust and scalable pipeline to generate question-answer (QA) pairs from the Amazon Berkeley Objects (ABO) dataset using the Gemini 2.0 Flash model.
 ---
 
-### Setup and Configuration
+#### Setup and Configuration
 
 To begin, we configured the Google Generative AI API with proper authentication to enable communication with the Gemini model. We carefully defined file paths to access both the ABO small image dataset, containing 256x256 resolution images, and the corresponding matched CSV file. Additionally, we set up a dedicated output directory to store the newly generated dataset.
 
 ---
 
-### Batch Processing Strategy
+#### Batch Processing Strategy
 
 Considering the dataset’s large size, we implemented a batch processing strategy that allowed us to process the data incrementally. By specifying configurable row ranges (from `start_row` to `end_row`), we ensured efficient use of computational resources and allowed for smooth recovery and continuation if interruptions occurred during processing.
 
 ---
 
-### Image and Metadata Integration
+#### Image and Metadata Integration
 
 For each product, we loaded the associated image and its detailed metadata. The images were encoded into base64 format to comply with API input requirements, while the metadata was serialized into JSON format to provide comprehensive context to the vision-language model. This combination ensured that the model had both visual and descriptive information to generate meaningful question-answer pairs.
 
 ---
 
-### Prompt Engineering
+#### Prompt Engineering
 
 We crafted a specialized prompt with careful consideration of the VQA task requirements:
 
@@ -201,7 +202,7 @@ Output 13 question-answer pairs in the following format:
  ...
 ]"
 
-#### Reasoning Behind Prompt Design
+##### Reasoning Behind Prompt Design
 
 - Fixing the number of question-answer pairs at 13 helped ensure consistent dataset size for each product.
 - Restricting answers to one word reduced ambiguity and made the dataset easier to train on.
@@ -212,12 +213,12 @@ Output 13 question-answer pairs in the following format:
 
 ---
 
-### Response Processing
+#### Response Processing
 
 Upon receiving the API responses, we carefully parsed the JSON-formatted question-answer pairs. We implemented error handling to address any malformed responses or API failures gracefully. As a result, each product image yielded approximately 13 unique question-answer pairs that accurately reflected its visual and contextual content.
 
 ---
 
-### Dataset Construction
+#### Dataset Construction
 
-Finally, we constructed the dataset by linking each image path to its corresponding set of question-answer pairs. To safeguard against data loss and facilitate incremental work, we saved the generated data progressively into a CSV file. This structured dataset is now well-suited for training, fine-tuning, and evaluating models on Visual Question Answering tasks.
+Finally, we constructed the dataset by linking each image path to its corresponding set of question-answer pairs. To safeguard against data loss and facilitate incremental work, we saved the generated data progressively into a CSV file. This structured dataset is now well-suited for training, fine-tuning, and evaluating models on Visual Question Answering tasks. v140.csv in our repo is the final curated datset.
