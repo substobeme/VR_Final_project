@@ -1,5 +1,10 @@
 # VR Final Project
 
+## Contributors
+- **Bhanuja Bhatt**(MT2024030)
+- **Subha Chakraborty**(MT2024156)
+- **Meenal Jain**(MT2024088)
+  
 ## Table of Contents
 
 - [Project Overview](#project-overview)  
@@ -15,8 +20,7 @@
   - [Baseline Prediction and Model Choice](#Baseline-Prediction-and-Model-Choice)
   - [Evaluation Metrics](#Evaluation-Metrics)
   - [Process and Implementation](#Process-and-Implementation)
-- [Contributors](#Contributors)
- 
+
 
 ---
 
@@ -276,11 +280,6 @@ Our evaluation pipeline iterates over the dataset, performing the following step
 5. **Result Logging:** Predictions and scores are saved incrementally to CSV files to safeguard against data loss and facilitate further analysis.
 
 ---
-
-## Contributors
-- **Bhanuja Bhatt**(MT2024030)
-- **Subha Chakraborty**(MT2024156)
-- **Meenal Jain**(MT2024088)
 
 
 
